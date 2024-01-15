@@ -1,27 +1,60 @@
+import { getEffectiveConstraintOfTypeParameter } from "typescript";
 import { readALine } from "../utils";
 import { User } from "./User";
+import { UserBuilder } from "./UserBuilder";
 
 export class UserDataManagement{
     private users:User[];
+    private userBuilder:UserBuilder;
     constructor(){
         this.users=[];
+        this.userBuilder=new UserBuilder();
     }
-    takeInputs(){
-
-    } 
     addUser(){
-
+        try{
+            console.log("Please provide details of user :");
+            this.userBuilder=new UserBuilder();
+            this.userBuilder.setUser();
+            const newUser=this.userBuilder.getUser();
+            const userPresent=this.users.findIndex(user=>user.getRollNumber()===newUser.getRollNumber());
+            if(userPresent!==-1){
+                throw new Error("User with this roll number already present.")
+            }
+            this.users.push(newUser);
+            console.log("User added successfully!")
+        }catch(err:any){
+            console.log(err?.message);
+        }
     }
-    displayUsers(){}
-    deleteUser(){}
+    displayUsers(){
+        console.table(this.users);
+    }
+    deleteUser(){
+        console.log("Please Input the roll Number of user to delete");
+        try{
+            const rollNumber=parseInt(readALine());
+            const exists=this.users.findIndex(user=>user.getRollNumber()===rollNumber);
+            if(exists===-1){
+                throw new Error("User doesnt Exists");
+            }else{
+                this.users.splice(exists,1);
+                console.log("User Deleted succcessfully!")
+            }
+        }catch(err:any){
+            console.log(err?.message);
+        }
+    }
     saveUser(){}
     showMenu():number{
-        console.log("Menu");
+
+        console.log("----------");
+        console.log("---Menu---");
         console.log("Press 1. to add user.");
         console.log("Press 2. to display user.");
         console.log("Press 3. to delete user.");
         console.log("Press 4. to save user.");
         console.log("Press 5. to exit");
+        console.log("----------");
         try{
             const input= parseInt(readALine());
             switch (input){

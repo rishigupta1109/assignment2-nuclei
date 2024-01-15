@@ -6,6 +6,18 @@ export class User{
     private rollNumber:number;
     private age:number;
     private courses:Course[];
+    constructor(){
+        this.name="";
+        this.address="";
+        this.rollNumber=-1;
+        this.age=-1;
+        this.courses=[];
+    }
+    getName(){return this.name;}
+    getRollNumber(){return this.rollNumber;}
+    getAge(){return this.age;}
+    getAddress(){return this.address;}
+    getCources(){return this.courses;}
     setName(name:string){
         this.name=name;        
     }
@@ -18,13 +30,8 @@ export class User{
     setRollNumber(rollNumber:number){
         this.rollNumber=rollNumber;   
     }
-    setCourses(courses:string){
-        this.courses=this.getCoursesFromString(courses) ;       
+    setCourses(courses:Course[]){
+        this.courses=(courses) ;       
     }
-    getCoursesFromString(courses:string):Course[]{
-        let coursesStrings=courses.split(',');
-        coursesStrings=coursesStrings.map(courseString=>courseString.trim());
-        let coursesArray= coursesStrings.map(course=>new Course(course));
-        return coursesArray;
-    }
+    
 }

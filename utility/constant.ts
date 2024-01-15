@@ -1,0 +1,1 @@
+export const validCourses=['A','B','C','D','E','F'];
