@@ -2,13 +2,41 @@ import { getEffectiveConstraintOfTypeParameter } from "typescript";
 import { readALine } from "../utils";
 import { User } from "./User";
 import { UserBuilder } from "./UserBuilder";
+import { MemoryManagement } from "./MemoryManagement";
 
 export class UserDataManagement{
     private users:User[];
     private userBuilder:UserBuilder;
+    private memoryManagement:MemoryManagement;
     constructor(){
-        this.users=[];
+        this.memoryManagement=new MemoryManagement('./Data/Data.json');
         this.userBuilder=new UserBuilder();
+        this.users=[];
+        try{
+            const data=this.memoryManagement.getData();
+            // console.log(data);
+            try{
+                if(Array.isArray(data)&&data.length>0){
+                    let isValid=true;
+                    data.forEach(user=>{
+                        let temp=new User();
+                        temp.copyConstructor(user as User);
+                        isValid&&=temp.validateUser();
+                    })
+                    const arr=data.map(d=>{let user=new User();user.copyConstructor(d);return user});
+                    this.users=arr;
+                    console.log("Data Loaded from Memory");
+                }else{
+                    console.log("No Data Found in Memory");
+                }
+
+            }catch(err:any){
+                console.log(err?.message);
+                this.users=[];
+            }
+        }catch(err:any){
+            console.log("ERROR : ",err?.message);
+        }
     }
     addUser(){
         try{
@@ -23,7 +51,7 @@ export class UserDataManagement{
             this.users.push(newUser);
             console.log("User added successfully!")
         }catch(err:any){
-            console.log(err?.message);
+            console.log("ERROR : ",err?.message);
         }
     }
     displayUsers(){
@@ -35,7 +63,7 @@ export class UserDataManagement{
             const rollNumber=parseInt(readALine());
             const exists=this.users.findIndex(user=>user.getRollNumber()===rollNumber);
             if(exists===-1){
-                throw new Error("User doesnt Exists");
+                throw new Error("User doesn`t Exists");
             }else{
                 this.users.splice(exists,1);
                 console.log("User Deleted succcessfully!")
@@ -44,9 +72,15 @@ export class UserDataManagement{
             console.log(err?.message);
         }
     }
-    saveUser(){}
+    saveUser(){
+        try{
+            this.memoryManagement.saveData(this.users);
+            console.log("User Saved SuccessFully!")
+        }catch(err:any){
+            console.log("ERROR : ",err?.message);
+        }
+    }
     showMenu():number{
-
         console.log("----------");
         console.log("---Menu---");
         console.log("Press 1. to add user.");

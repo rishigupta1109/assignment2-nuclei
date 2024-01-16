@@ -26,12 +26,8 @@ export class UserBuilder{
             this.user.setRollNumber(rollNumber);
             this.user.setAge(age);
             const coursesArray=this.getCoursesFromString(cources);
-            if(!this.validateName(name)) throw new Error("Invalid name Inputs")
-            if(!this.validateAddress(address)) throw new Error("Invalid address Inputs")
-            if(!this.validateAge(age)) throw new Error("Invalid age Inputs")
-            if(!this.validateRollNumber(rollNumber)) throw new Error("Invalid roll Number Inputs")
-            if(!this.validateCourses(coursesArray)) throw new Error("Invalid course Inputs")
             this.user.setCourses(coursesArray);
+            this.user.validateUser();
     }
     getUser(){
         return this.user;
@@ -42,28 +38,5 @@ export class UserBuilder{
         let coursesArray= coursesStrings.map(course=>new Course(course));
         return coursesArray;
     }
-    validateCourses(courses:Course[]){
-        let isValid=true;
-        courses.forEach((course:Course)=>{
-            if(!validCourses.includes(course.getName())) isValid=false;
-        })
-        if(!isValid) throw new Error("Course not found");
-        if(courses.length<4){
-            isValid=false;
-            throw new Error("Must select atleast four courses")
-        }
-        return isValid;
-    }
-    validateName(name:string){
-        return name.trim().length!==0;
-    }
-    validateAddress(add:string){
-        return add.trim().length!==0;
-    }
-    validateAge(age:number){
-        return age>0&&!isNaN(age);
-    }
-    validateRollNumber(roll:number){
-        return roll>0&&!isNaN(roll);
-    }
+   
 }
