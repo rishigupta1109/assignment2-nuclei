@@ -25,6 +25,7 @@ export class UserDataManagement{
                     })
                     const arr=data.map(d=>{let user=new User();user.copyConstructor(d);return user});
                     this.users=arr;
+                    this.sortUsers();
                     console.log("Data Loaded from Memory");
                 }else{
                     console.log("No Data Found in Memory");
@@ -38,6 +39,17 @@ export class UserDataManagement{
             console.log("ERROR : ",err?.message);
         }
     }
+    sortUsers(){
+        this.users.sort((a,b)=>{
+                if(a.getName()>b.getName()) return 1;
+                else if(a.getName()===b.getName()){
+                    if(a.getRollNumber()>b.getRollNumber()){
+                        return 1;
+                    }
+                }
+                return -1;
+        })
+    }
     addUser(){
         try{
             console.log("Please provide details of user :");
@@ -49,6 +61,7 @@ export class UserDataManagement{
                 throw new Error("User with this roll number already present.")
             }
             this.users.push(newUser);
+            this.sortUsers();
             console.log("User added successfully!")
         }catch(err:any){
             console.log("ERROR : ",err?.message);
