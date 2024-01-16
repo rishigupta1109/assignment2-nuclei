@@ -3,5 +3,7 @@ export class Course{
     constructor(name:string){
         this.name=name;
     }
-    getName(){return this.name;}
+    getName(){
+        return this.name;
+    }
 }

@@ -1,4 +1,4 @@
-import { getEffectiveConstraintOfTypeParameter } from "typescript";
+
 import { readALine } from "../utils";
 import { User } from "./User";
 import { UserBuilder } from "./UserBuilder";

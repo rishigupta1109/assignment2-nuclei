@@ -70,7 +70,7 @@ export class User{
         if(!this.validateAddress()) throw new Error("Invalid address Inputs")
         if(!this.validateAge()) throw new Error("Invalid age Inputs")
         if(!this.validateRollNumber()) throw new Error("Invalid roll Number Inputs")
-        if(!this.validateCourses()) throw new Error("Invalid course Inputs")
+        this.validateCourses()
         return true;
     }
     
