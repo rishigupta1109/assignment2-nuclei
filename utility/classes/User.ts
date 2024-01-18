@@ -41,38 +41,42 @@ export class User{
     setCourses(courses:Course[]){
         this.courses=(courses) ;       
     }
-    validateCourses(){
+    static validateCourses(courses:Course[]){
         let isValid=true;
-        this.courses.forEach((course:Course)=>{
+        courses.forEach((course:Course)=>{
             if(!validCourses.includes(course.getName())) isValid=false;
         })
         if(!isValid) throw new Error("Course not found");
-        if(this.courses.length<4){
+        if(courses.length<4){
             isValid=false;
             throw new Error("Must select atleast four courses")
         }
         return isValid;
     }
-    validateName(){
-        return this.name.trim().length!==0;
+    static validateName(name:string){
+        return name.trim().length!==0;
     }
-    validateAddress(){
-        return this.address.trim().length!==0;
+    static validateAddress(address:string){
+        return address.trim().length!==0;
     }
-    validateAge(){
-        return this.age>0&&!isNaN(this.age);
+    static validateAge(age:number){
+        return age>0&&!isNaN(age);
     }
-    validateRollNumber(){
-        return this.rollNumber>0&&!isNaN(this.rollNumber);
+    static validateRollNumber(rollNumber:number){
+        return rollNumber>0&&!isNaN(rollNumber);
     }
-    validateUser(){
-        if(!this.validateName()) throw new Error("Invalid name Inputs")
-        if(!this.validateAddress()) throw new Error("Invalid address Inputs")
-        if(!this.validateAge()) throw new Error("Invalid age Inputs")
-        if(!this.validateRollNumber()) throw new Error("Invalid roll Number Inputs")
-        this.validateCourses()
+    static validateUser(user : User){
+        if(!this.validateName(user.getName())) throw new Error("Invalid name Inputs")
+        if(!this.validateAddress(user.getAddress())) throw new Error("Invalid address Inputs")
+        if(!this.validateAge(user.getAge())) throw new Error("Invalid age Inputs")
+        if(!this.validateRollNumber(user.getRollNumber())) throw new Error("Invalid roll Number Inputs")
+        this.validateCourses(user.getCources());
         return true;
     }
-    
+    static fromJson(json:any){
+        let user=new User();
+        user.copyConstructor(json);
+        return user;
+    }
     
 }

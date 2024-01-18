@@ -1,5 +1,4 @@
-import { isNumericLiteral } from "typescript";
-import { validCourses } from "../constant";
+
 import { readALine } from "../utils";
 import { Course } from "./Course";
 import { User } from "./User";
@@ -27,7 +26,7 @@ export class UserBuilder{
             this.user.setAge(age);
             const coursesArray=this.getCoursesFromString(cources);
             this.user.setCourses(coursesArray);
-            this.user.validateUser();
+            User.validateUser(this.user);
     }
     getUser(){
         return this.user;
@@ -35,6 +34,7 @@ export class UserBuilder{
     getCoursesFromString(courses:string):Course[]{
         let coursesStrings=courses.split(',');
         coursesStrings=coursesStrings.map(courseString=>courseString.trim());
+        coursesStrings=coursesStrings.filter(courseString=>courseString.length>0);
         let coursesArray= coursesStrings.map(course=>new Course(course));
         return coursesArray;
     }

@@ -80,7 +80,9 @@ test("testing User class validate name function",()=>{
     trueTestcases.forEach(testcase=>{
         let user=new User();
         user.setName(testcase);
-        expect(user.validateName()).toBe(true);
+        expect(
+            User.validateName(user.getName())
+        ).toBe(true);
     })
     const falseTestcases=[
         "",
@@ -90,7 +92,9 @@ test("testing User class validate name function",()=>{
     falseTestcases.forEach(testcase=>{
         let user=new User();
         user.setName(testcase);
-        expect(user.validateName()).toBe(false);
+        expect(
+            User.validateName(user.getName())
+        ).toBe(false);
     })
 })
 
@@ -103,7 +107,9 @@ test("testing User class validate address function",()=>{
     trueTestcases.forEach(testcase=>{
         let user=new User();
         user.setAddress(testcase);
-        expect(user.validateAddress()).toBe(true);
+        expect(
+            User.validateAddress(user.getAddress())
+        ).toBe(true);
     })
     const falseTestcases=[
         "",
@@ -113,7 +119,9 @@ test("testing User class validate address function",()=>{
     falseTestcases.forEach(testcase=>{
         let user=new User();
         user.setAddress(testcase);
-        expect(user.validateAddress()).toBe(false);
+        expect(
+            User.validateAddress(user.getAddress())
+        ).toBe(false);
     })
 })
 
@@ -128,7 +136,7 @@ test("testing User class validate age function",()=>{
     trueTestcases.forEach(testcase=>{
         let user=new User();
         user.setAge(testcase);
-        expect(user.validateAge()).toBe(true);
+        expect(User.validateAge(user.getAge())).toBe(true);
     })
     const falseTestcases=[
         0,
@@ -141,7 +149,9 @@ test("testing User class validate age function",()=>{
     falseTestcases.forEach(testcase=>{
         let user=new User();
         user.setAge(testcase);
-        expect(user.validateAge()).toBe(false);
+        expect(
+            User.validateAge(user.getAge())
+        ).toBe(false);
     })
 })
 
@@ -156,7 +166,7 @@ test("testing User class validate roll Number function",()=>{
     trueTestcases.forEach(testcase=>{
         let user=new User();
         user.setRollNumber(testcase);
-        expect(user.validateRollNumber()).toBe(true);
+        expect(User.validateRollNumber(user.getRollNumber())).toBe(true);
     })
     const falseTestcases=[
         0,
@@ -169,7 +179,7 @@ test("testing User class validate roll Number function",()=>{
     falseTestcases.forEach(testcase=>{
         let user=new User();
         user.setRollNumber(testcase);
-        expect(user.validateRollNumber()).toBe(false);
+        expect(User.validateRollNumber(user.getRollNumber())).toBe(false);
     })
 });
 
@@ -182,7 +192,7 @@ test("testing User class validate courses function",()=>{
     trueTestcases.forEach(testcase=>{
         let user=new User();
         user.setCourses(testcase);
-        expect(user.validateCourses()).toBe(true);
+        expect(User.validateCourses(user.getCources())).toBe(true);
     })
     
 })
@@ -194,9 +204,9 @@ test("testing User class validate courses function fail cases",()=>{
     
         let user=new User();
         user.setCourses(falseTestcases[0]);
-        expect(()=>user.validateCourses()).toThrowError("Must select atleast four courses");
+        expect(()=>User.validateCourses(user.getCources())).toThrowError("Must select atleast four courses");
         user.setCourses(falseTestcases[1]);
-        expect(()=>user.validateCourses()).toThrowError("Course not found");
+        expect(()=>User.validateCourses(user.getCources())).toThrowError("Course not found");
     
 })
 test("testing User class validate user function",()=>{
@@ -237,7 +247,7 @@ test("testing User class validate user function",()=>{
         user.setRollNumber(testcase.rollNumber);
         user.setAddress(testcase.address);
         user.setCourses(testcase.courses);
-        expect(user.validateUser()).toBe(true);
+        expect(User.validateUser(user)).toBe(true);
     })
 })
 test("testing User class validate user function fail cases",()=>{
@@ -343,7 +353,7 @@ test("testing User class validate user function fail cases",()=>{
         user.setRollNumber(testcase.rollNumber);
         user.setAddress(testcase.address);
         user.setCourses(testcase.courses);
-        expect(()=>user.validateUser()).toThrowError(testcase.expeectedError);
+        expect(()=>User.validateUser(user)).toThrowError(testcase.expeectedError);
     }
     )
     

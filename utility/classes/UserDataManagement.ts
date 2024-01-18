@@ -9,7 +9,7 @@ export class UserDataManagement{
     private userBuilder:UserBuilder;
     private memoryManagement:MemoryManagement;
     constructor(){
-        this.memoryManagement=new MemoryManagement('./Data/Data.json');
+        this.memoryManagement=MemoryManagement.getInstance('./Data/Data.json');
         this.userBuilder=new UserBuilder();
         this.users=[];
         try{
@@ -17,41 +17,84 @@ export class UserDataManagement{
             // console.log(data);
             try{
                 if(Array.isArray(data)&&data.length>0){
-                    let isValid=true;
+                    const arr:User[]=[];
                     data.forEach(user=>{
-                        let temp=new User();
-                        temp.copyConstructor(user as User);
-                        isValid&&=temp.validateUser();
+                        let userWithMeths=User.fromJson(user);
+                        User.validateUser(userWithMeths);
+                        arr.push(userWithMeths);
                     })
-                    const arr=data.map(d=>{let user=new User();user.copyConstructor(d);return user});
                     this.users=arr;
-                    this.sortUsers();
                     console.log("Data Loaded from Memory");
+                    
                 }else{
+                    this.users=[];
                     console.log("No Data Found in Memory");
                 }
 
             }catch(err:any){
-                console.log(err?.message);
+                console.log(err,err?.message);
                 this.users=[];
             }
         }catch(err:any){
+            this.users=[];
             console.log("ERROR : ",err?.message);
         }
     }
-    sortUsers(){
-        this.users.sort((a,b)=>{
-                if(a.getName()>b.getName()) return 1;
-                else if(a.getName()===b.getName()){
-                    if(a.getRollNumber()>b.getRollNumber()){
-                        return 1;
-                    }
-                }
-                return -1;
-        })
+    sortUsers(order:number=1,field:number=1){
+        if(order!==1&&order!==2){
+            throw new Error("Invalid Order");
+        }
+        if(field!==1&&field!==2&&field!==3&&field!==4){
+            throw new Error("Invalid Field");
+        }
+        this.users.sort((user1,user2)=>{
+            let val1:string|number,val2:string|number;
+            let secVal1:string|number,secVal2:string|number
+            switch(field){
+                case 1:
+                    val1=user1.getName();
+                    val2=user2.getName();
+                    secVal1=user1.getRollNumber();
+                    secVal2=user2.getRollNumber();
+                    break;
+                case 2:
+                    val1=user1.getRollNumber();
+                    val2=user2.getRollNumber();
+                    secVal1=user1.getName();
+                    secVal2=user2.getName();
+                    break;
+                case 3:
+                    val1=user1.getAge();
+                    val2=user2.getAge();
+                    secVal1=user1.getName();
+                    secVal2=user2.getName();
+                    break;
+                case 4:
+                    val1=user1.getAddress();
+                    val2=user2.getAddress();
+                    secVal1=user1.getName();
+                    secVal2=user2.getName();
+                    break;
+                
+            }
+            if(order===1){
+                if(val1<val2) return -1;
+                else if(val1>val2) return 1;
+                else if(secVal1<secVal2) return -1;
+                else  return 1;
+                
+            }else{
+                if(val1<val2) return 1;
+                else if(val1>val2) return -1;
+                else if(secVal1<secVal2) return 1;
+                else  return -1;
+                
+            }
+        }
+        )
     }
     addUser(){
-        try{
+        
             console.log("Please provide details of user :");
             this.userBuilder=new UserBuilder();
             this.userBuilder.setUser();
@@ -63,16 +106,41 @@ export class UserDataManagement{
             this.users.push(newUser);
             this.sortUsers();
             console.log("User added successfully!")
-        }catch(err:any){
-            console.log("ERROR : ",err?.message);
+        
+    }
+    sortPrompt(){
+        
+        console.log("Please select the order in which you want to sort :");
+        console.log("Press 1. to sort in ascending order");
+        console.log("Press 2. to sort in descending order");
+        const order=parseInt(readALine());
+        if(order!==1&&order!==2){
+            throw new Error("Invalid Input");
         }
+        console.log("Please select the field on which you want to sort :");
+        console.log("Press 1. to sort by name");
+        console.log("Press 2. to sort by roll number");
+        console.log("Press 3. to sort by age");
+        console.log("Press 4. to sort by address");
+        const field=parseInt(readALine());
+        if(field!==1&&field!==2&&field!==3&&field!==4){
+            throw new Error("Invalid Input");
+        }
+        this.sortUsers(order,field);
     }
     displayUsers(){
-        console.table(this.users);
+        if(this.users.length===0){
+            console.log("No Users Present");
+            return this.users;
+        }
+            this.sortPrompt();
+            console.log("Displaying Users :");
+            console.table(this.users);
+        return this.users;
+
     }
     deleteUser(){
         console.log("Please Input the roll Number of user to delete");
-        try{
             const rollNumber=parseInt(readALine());
             const exists=this.users.findIndex(user=>user.getRollNumber()===rollNumber);
             if(exists===-1){
@@ -81,16 +149,30 @@ export class UserDataManagement{
                 this.users.splice(exists,1);
                 console.log("User Deleted succcessfully!")
             }
-        }catch(err:any){
-            console.log(err?.message);
-        }
+        
     }
-    saveUser(){
-        try{
+    saveUsers(){
+            this.sortUsers();
             this.memoryManagement.saveData(this.users);
-            console.log("User Saved SuccessFully!")
-        }catch(err:any){
-            console.log("ERROR : ",err?.message);
+            console.log("Data Saved SuccessFully!")
+        
+    }
+    confirmTermination(){
+        console.log("Are you sure you want to exit ? (Y/N)");
+        const input=readALine();
+        if(input==='Y'){
+            console.log("do you want to save the data ? (Y/N)");
+            const input=readALine();
+            if(input==='Y'){
+                this.saveUsers();
+            }else if(input!=='N'){
+                throw new Error("Invalid Input");
+            }
+            return true;
+        }else if(input==='N'){
+            return false;
+        }else{
+            throw new Error("Invalid Input");
         }
     }
     showMenu():number{
@@ -102,7 +184,7 @@ export class UserDataManagement{
         console.log("Press 4. to save user.");
         console.log("Press 5. to exit");
         console.log("----------");
-        try{
+        
             const input= parseInt(readALine());
             switch (input){
                 case 1:
@@ -115,23 +197,26 @@ export class UserDataManagement{
                     this.deleteUser();
                     break;
                 case 4:
-                    this.saveUser();
+                    this.saveUsers();
                     break;
                 case 5:
+                    if(this.confirmTermination())
                     return 0;
-                    break;
                 default:
                     throw new Error("Invalid Input");
             }
-        }catch(err:any){
-            console.error(err?.message);
-        }
+        
         return 1;
     }
     run(){
+        
         while(true){
-            let continueLoop=this.showMenu();
-            if(!continueLoop) break;
+            try{
+                let continueLoop=this.showMenu();
+                if(!continueLoop) break;
+            }catch(err:any){
+                console.log("ERROR : ",err?.message);
+            }
         }
     }
 }
